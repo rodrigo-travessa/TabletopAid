@@ -140,7 +140,7 @@ namespace TabletopAid
                 dt.Columns.Add("Quantity", typeof(int));
                 foreach (string str in openFileDialog1.FileNames)
                 {
-                    dt.Rows.Add(Path.GetFileName(str), str,1);
+                    dt.Rows.Add(Path.GetFileName(str), str, 1);
                 }
 
                 dataGridView1.DataSource = dt;
@@ -151,7 +151,7 @@ namespace TabletopAid
         {
             try
             {
-            pictureBox2.Image = new Bitmap(dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString());
+                pictureBox2.Image = new Bitmap(dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString());
 
             }
             catch
@@ -161,6 +161,84 @@ namespace TabletopAid
         }
 
         private void openFileDialog1_FileOk_1(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            {
+                label4.Text = folderBrowserDialog1.SelectedPath;
+            }
+
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            int a4Width = 2480;
+            int a4Height = 3508;
+
+            int stdCardWidth = (int)numericUpDown7.Value;
+            int stdCardHeight = (int)numericUpDown8.Value;
+
+            int horBorder = (int)numericUpDown5.Value; 
+            int vertBorder = (int)numericUpDown6.Value;
+
+            int cardsPerRow = (int)numericUpDown3.Value;
+            int cardsPerColumn = (int)numericUpDown4.Value;
+
+            Bitmap PageToPrint = new Bitmap(  a4Width, a4Height);
+            Graphics g = Graphics.FromImage(PageToPrint);
+            g.FillRectangle(Brushes.White, 0, 0, a4Width, a4Height);
+            pictureBox2.Image = PageToPrint;
+
+            List<string> imgList = new List<string>();
+            for (int i = 0; i < dataGridView1.Rows.Count-1; i++)
+            {
+                for (int l = 0; l < (int)dataGridView1.Rows[i].Cells[2].Value; l++)
+                {
+                    imgList.Add(dataGridView1.Rows[i].Cells[1].Value.ToString());
+                }
+            }
+            int numOfPages = imgList.Count / (cardsPerColumn * cardsPerRow);
+            int pageIndex = 0;
+            int imgIndex = 0;
+            for (int k = 0; k < numOfPages; k++)
+            {
+
+                for (int j = 0; j < cardsPerColumn; j++)
+                {
+                    for (int i = 0; i < cardsPerRow; i++)
+                    {
+                        g.DrawImage(new Bitmap(imgList[imgIndex])
+                        , 60 + (horBorder * i) + (stdCardWidth * i), 60 + (vertBorder * j) + (stdCardHeight * j), stdCardWidth, stdCardHeight);
+                        imgIndex++;
+                    }
+                }
+                PageToPrint.Save($"{label4.Text}\\Page{pageIndex}.png");
+                pageIndex++;
+            }
+            ///create blank image for the page
+            ///populaet the blank page, save it to the folder and reset it.
+
+        }
+
+        //Columns
+        private void numericUpDown4_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+        //Rows
+        private void numericUpDown3_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void numericUpDown5_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void numericUpDown6_ValueChanged(object sender, EventArgs e)
         {
 
         }
